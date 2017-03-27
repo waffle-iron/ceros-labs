@@ -2,8 +2,7 @@
 
 require.config({
     paths: {
-        CerosSDK: 'https://sdk.ceros.com/standalone-player-sdk-v4.min',
-        jQuery: 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min'
+        CerosSDK: 'https://sdk.ceros.com/standalone-player-sdk-v4.min'
     }
 });
 
@@ -14,18 +13,14 @@ require(['CerosSDK'], function(CerosSDK) {
       })
       .done(function(experience){
 
-        // find components tagged "video"
-        var videos = experience.findComponentsByTag("video");
+        (function (){
 
-        // array of DOM elements that hold the videos
-        var videoDOM = document.getElementsByTagName("video");
 
-        // check current vs previous
-        var videosPlayingLastCycle = new Array(videos.length);
-
-        // repeat calls setTimeout on checkVideos at repeatInterval so play/pause state is checked every X milliseconds
-        var repeat;
-        var repeatInterval = 100;
+        var videoComponents = experience.findComponentsByTag("video"), // find components tagged "video"
+            videoDOM = document.getElementsByTagName("video"), // array of DOM elements that hold the videos
+            videosPlayingLastCycle = [], // check current vs previous
+            repeat, // repeat calls setTimeout on checkVideos at repeatInterval so play/pause state is checked every X milliseconds
+            repeatInterval = 100;
 
         // set all videos to be paused initially
         for(var i = 0; i < videosPlayingLastCycle.length; i++)
@@ -36,7 +31,7 @@ require(['CerosSDK'], function(CerosSDK) {
 
 
         // count the number of videos that are currently playing
-        function playingVideosCount()
+        var playingVideosCount = function()
         {
           var count = 0;
           for(var i = 0; i < videoDOM.length; i++)
@@ -50,7 +45,7 @@ require(['CerosSDK'], function(CerosSDK) {
         };
 
         // pause all videos that were playing during the last check cycle
-        function pausePreviouslyPlayingVideos()
+        var pausePreviouslyPlayingVideos = function ()
         {
           // pause all videos that were playing last check cycle, which ignores the newly playing video
           for(var i = 0; i < videosPlayingLastCycle.length; i++)
@@ -63,7 +58,7 @@ require(['CerosSDK'], function(CerosSDK) {
         };
 
         // update the list of video play/pause states, called at the end of the check cycle
-        function updatePlayingLastCheck()
+        var updatePlayingLastCheck = function ()
         {
           for(var i = 0; i < videoDOM.length; i++)
           {
@@ -79,7 +74,7 @@ require(['CerosSDK'], function(CerosSDK) {
         };
 
         // check the states of all videos and pause as necessary
-        function checkVideos()
+        var checkVideos = function ()
         {
           // if there is more than one video playing currently
           if(playingVideosCount() > 1)
@@ -95,5 +90,6 @@ require(['CerosSDK'], function(CerosSDK) {
 
         checkVideos();
 
+        })();
       });
   });
